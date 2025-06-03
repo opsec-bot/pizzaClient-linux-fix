@@ -11,9 +11,21 @@ create_fake_libc() {
     echo "Fake libc.so created at $FAKE_LIBC_DIR"
 }
 
+
+# easy launcher switching using second argument
+# launcher command stored in $LAUNCHER
+if [ -z "$2" ]
+then
+    echo "Did not specify launcher command, defaulting to minecraft-launcher"
+    LAUNCHER="minecraft-launcher"
+else
+    echo "Overriding launcher command: $2"
+    LAUNCHER="$2"
+fi
+
 launch_minecraft() {
     echo "Launching Minecraft Launcher with fake libc.so..."
-    LD_LIBRARY_PATH="$FAKE_LIBC_DIR" minecraft-launcher
+    LD_LIBRARY_PATH="$FAKE_LIBC_DIR" $LAUNCHER
 }
 
 undo_fake_libc() {
@@ -27,9 +39,10 @@ undo_fake_libc() {
 }
 
 show_help() {
-    echo "Usage: $0 [start|undo]"
+    echo "Usage: $0 [start|undo] [cmd]"
     echo "  start - Create fake libc.so and launch Minecraft"
     echo "  undo  - Remove fake libc.so setup"
+    echo "  cmd   - Literally Specify launcher command. Otherwise defaults to minecraft-launcher"
 }
 
 case "$1" in
